@@ -36,7 +36,6 @@ class AutoFieldsetsMixin:
             model=self.model,
             fieldsets=fieldsets,
             exclude=getattr(self, "exclude", None) or [],
-            readonly_fields=self.get_readonly_fields(request, obj),
             get_fields=lambda: self.get_fields(request, obj),
             placeholder=self.remaining_fields_placeholder,
         )
@@ -52,7 +51,6 @@ def auto_add_fields_to_fieldsets(
     model: Any,
     fieldsets: list[tuple[str, dict[str, Any]]],
     exclude: list[str] = None,
-    readonly_fields: list[str] = None,
     get_fields=None,
     placeholder: str = "__remaining__",
 ) -> list[tuple[str, dict[str, Any]]]:
@@ -63,7 +61,6 @@ def auto_add_fields_to_fieldsets(
         model: The Django model class
         fieldsets: The fieldsets list to process
         exclude: List of field names to exclude (optional)
-        readonly_fields: List of read-only field names (optional)
         get_fields: Function to get all available fields, if needed for custom cases
         placeholder: The placeholder string to look for in fieldsets
 
@@ -71,7 +68,6 @@ def auto_add_fields_to_fieldsets(
         Updated fieldsets with remaining fields added to the placeholder location
     """
     exclude = exclude or []
-    readonly_fields = readonly_fields or []
 
     # Get all field names from the model
     model_fields = list(model._meta.fields)
@@ -110,7 +106,6 @@ def auto_add_fields_to_fieldsets(
         for f in available_fields
         if f not in specified_fields
         and f not in exclude
-        and f not in readonly_fields
         and (not f.startswith("_") or f in available_fields)
     ]
 

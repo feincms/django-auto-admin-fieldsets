@@ -59,7 +59,7 @@ class TestStandaloneFunction(TestCase):
 
         # Get the result using the standalone function
         result = auto_add_fields_to_fieldsets(
-            model=TestModel, fieldsets=fieldsets, exclude=[], readonly_fields=[]
+            model=TestModel, fieldsets=fieldsets, exclude=[]
         )
 
         # Check if the result has the expected structure
@@ -82,7 +82,7 @@ class TestStandaloneFunction(TestCase):
 
         # Get the result using the standalone function
         result = auto_add_fields_to_fieldsets(
-            model=TestModel, fieldsets=fieldsets, exclude=[], readonly_fields=[]
+            model=TestModel, fieldsets=fieldsets, exclude=[]
         )
 
         self.assertEqual(
@@ -105,7 +105,6 @@ class TestStandaloneFunction(TestCase):
             model=TestModel,
             fieldsets=fieldsets,
             exclude=[],
-            readonly_fields=[],
             placeholder="__custom__",
         )
 
@@ -119,7 +118,7 @@ class TestStandaloneFunction(TestCase):
 
         self.assertEqual(set(remaining_fields), set(expected_remaining))
 
-    def test_with_exclude_and_readonly(self):
+    def test_with_exclude(self):
         # Starting fieldsets with placeholder
         fieldsets = [
             ("Basic", {"fields": ["title", "slug"]}),
@@ -130,14 +129,13 @@ class TestStandaloneFunction(TestCase):
         result = auto_add_fields_to_fieldsets(
             model=TestModel,
             fieldsets=fieldsets,
-            exclude=["featured"],  # Exclude featured field
-            readonly_fields=["published"],  # These are readonly
+            exclude=["featured", "published"],  # Exclude featured and published fields
         )
 
-        # The second fieldset should have remaining fields minus excluded/readonly
+        # The second fieldset should have remaining fields minus excluded fields
         remaining_fields = result[1][1]["fields"]
         expected_remaining = [
             "description",
-        ]  # No featured, created_at, updated_at
+        ]  # No featured, published, created_at, updated_at
 
         self.assertEqual(set(remaining_fields), set(expected_remaining))
