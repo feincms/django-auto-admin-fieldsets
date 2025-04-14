@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2] - 2024-04-14
+
 ### Changed
 - Modified the `auto_add_fields_to_fieldsets` function to no longer exclude readonly fields
 
