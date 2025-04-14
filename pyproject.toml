@@ -1,0 +1,115 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = [ "hatchling" ]
+
+[project]
+name = "django-auto-admin-fieldsets"
+description = "A Django utility for automatically handling unspecified fields in admin fieldsets"
+readme = "README.md"
+keywords = [ "admin", "django", "fieldsets", "utility" ]
+license = { text = "MIT" }
+authors = [
+  { name = "Matthias Kestenholz", email = "mk@feinheit.ch" },
+]
+requires-python = ">=3.10"
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.0",
+  "Framework :: Django :: 5.1",
+  "Framework :: Django :: 5.2",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+]
+optional-dependencies.tests = [
+  "coverage",
+]
+urls.Documentation = "https://github.com/matthiask/django-auto-admin-fieldsets#readme"
+urls.Homepage = "https://github.com/matthiask/django-auto-admin-fieldsets"
+urls.Issues = "https://github.com/matthiask/django-auto-admin-fieldsets/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = [ "django_auto_admin_fieldsets" ]
+
+[tool.hatch.build]
+include = [
+  "django_auto_admin_fieldsets",
+]
+
+[tool.hatch.version]
+path = "django_auto_admin_fieldsets/__init__.py"
+
+[tool.ruff]
+target-version = "py310"
+
+fix = true
+show-fixes = true
+lint.extend-select = [
+  # flake8-bugbear
+  "B",
+  # flake8-comprehensions
+  "C4",
+  # mmcabe
+  "C90",
+  # flake8-django
+  "DJ",
+  "E",
+  # pyflakes, pycodestyle
+  "F",
+  # flake8-boolean-trap
+  "FBT",
+  # flake8-logging-format
+  "G",
+  # isort
+  "I",
+  # flake8-gettext
+  "INT",
+  # pygrep-hooks
+  "PGH",
+  # flake8-pie
+  "PIE",
+  # pylint
+  "PLE",
+  "PLW",
+  # unused noqa
+  "RUF100",
+  # flake8-tidy-imports
+  "TID",
+  # pyupgrade
+  "UP",
+  "W",
+  # flake8-2020
+  "YTT",
+]
+lint.extend-ignore = [
+  # Allow zip() without strict=
+  "B905",
+  # No line length errors
+  "E501",
+]
+lint.per-file-ignores."*/migrat*/*" = [
+  # Allow using PascalCase model names in migrations
+  "N806",
+  # Ignore the fact that migration files are invalid module names
+  "N999",
+]
+lint.isort.combine-as-imports = true
+lint.isort.lines-after-imports = 2
+lint.mccabe.max-complexity = 15
