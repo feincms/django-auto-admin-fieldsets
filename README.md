@@ -23,11 +23,10 @@ pip install django-auto-admin-fieldsets
 ```python
 from django.contrib import admin
 from django_auto_admin_fieldsets.admin import AutoFieldsetsMixin
-from .models import MyModel
+from . import models
 
+@admin.register(models.MyModel)
 class MyModelAdmin(AutoFieldsetsMixin, admin.ModelAdmin):
-    model = MyModel
-
     # Define fieldsets as usual with a placeholder
     fieldsets = [
         ("Basic Information", {"fields": ["title", "slug"]}),
@@ -36,8 +35,6 @@ class MyModelAdmin(AutoFieldsetsMixin, admin.ModelAdmin):
 
     # Optional: customize the placeholder (default is "__remaining__")
     remaining_fields_placeholder = "__remaining__"
-
-admin.site.register(MyModel, MyModelAdmin)
 ```
 
 ### Using the Convenience ModelAdmin
@@ -45,18 +42,15 @@ admin.site.register(MyModel, MyModelAdmin)
 ```python
 from django.contrib import admin
 from django_auto_admin_fieldsets.admin import AutoFieldsetsModelAdmin
-from .models import MyModel
+from . import models
 
+@admin.register(models.MyModel)
 class MyModelAdmin(AutoFieldsetsModelAdmin):
-    model = MyModel
-
     # Define fieldsets as usual with a placeholder
     fieldsets = [
         ("Basic Information", {"fields": ["title", "slug"]}),
         ("Content", {"fields": ["__remaining__"]}),  # All other fields will appear here
     ]
-
-admin.site.register(MyModel, MyModelAdmin)
 ```
 
 ### Using the Standalone Function
@@ -64,11 +58,10 @@ admin.site.register(MyModel, MyModelAdmin)
 ```python
 from django.contrib import admin
 from django_auto_admin_fieldsets.admin import auto_add_fields_to_fieldsets
-from .models import MyModel
+from . import models
 
+@admin.register(models.MyModel)
 class MyModelAdmin(admin.ModelAdmin):
-    model = MyModel
-
     fieldsets = [
         ("Basic Information", {"fields": ["title", "slug"]}),
         ("Content", {"fields": ["__remaining__"]}),
@@ -80,7 +73,6 @@ class MyModelAdmin(admin.ModelAdmin):
             model=self.model,
             fieldsets=fieldsets,
             exclude=self.exclude or [],
-            readonly_fields=self.get_readonly_fields(request, obj),
             placeholder="__remaining__",
         )
 
@@ -90,9 +82,10 @@ admin.site.register(MyModel, MyModelAdmin)
 ## Configuration Options
 
 - `remaining_fields_placeholder`: The placeholder string to look for in your fieldsets (default: `"__remaining__"`)
-- The function also respects the standard Django admin configuration options:
-  - `exclude`: Fields that should not be displayed in the admin
-  - `readonly_fields`: Fields that should be displayed as read-only
+
+The function also respects the standard Django admin configuration options. If
+you do not want a field to appear in the resulting `fieldsets`, add it to the
+standard `exclude` list.
 
 ## Development
 
