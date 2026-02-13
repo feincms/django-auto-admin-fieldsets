@@ -47,6 +47,50 @@ class AutoFieldsetsModelAdmin(AutoFieldsetsMixin, admin.ModelAdmin):
     """
 
 
+def remove_fields_from_fieldsets(
+    fieldsets: tuple[tuple[str | None, dict[str, Any]], ...]
+    | list[tuple[str | None, dict[str, Any]]],
+    field_name: str | list[str] | tuple[str, ...] | set[str] | frozenset[str],
+) -> list[tuple[str | None, dict[str, Any]]]:
+    """
+    Remove one or more field names from Django admin fieldsets.
+
+    Args:
+        fieldsets: Django admin fieldsets, e.g. ``ChapterAdmin.fieldsets``.
+        field_name: A single field name (``str``) or multiple field names as
+            ``list``/``tuple``/``set``.
+
+    Returns:
+        A new fieldsets structure with the selected fields removed.
+
+    Examples:
+        ``remove_fields_from_fieldsets(fieldsets, "hide_title")``
+        ``remove_fields_from_fieldsets(fieldsets, ["hide_title", "noindex"])``
+    """
+    if isinstance(field_name, str):
+        fields_to_remove = {field_name}
+    elif isinstance(field_name, (list, tuple, set, frozenset)):
+        fields_to_remove = set(field_name)
+    else:
+        fields_to_remove = {field_name}
+
+    cleaned = []
+    for name, options in fieldsets:
+        fields = []
+        for entry in options.get("fields", ()):
+            normalized = entry
+            if isinstance(entry, (list, tuple)):
+                filtered = tuple(item for item in entry if item not in fields_to_remove)
+                if not filtered:
+                    continue
+                normalized = filtered[0] if len(filtered) == 1 else filtered
+            elif entry in fields_to_remove:
+                continue
+            fields.append(normalized)
+        cleaned.append((name, {**options, "fields": tuple(fields)}))
+    return cleaned
+
+
 def auto_add_fields_to_fieldsets(
     model: Any,
     fieldsets: list[tuple[str, dict[str, Any]]],
