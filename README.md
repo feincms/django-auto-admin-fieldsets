@@ -79,6 +79,20 @@ class MyModelAdmin(admin.ModelAdmin):
 admin.site.register(MyModel, MyModelAdmin)
 ```
 
+### Removing fields from fieldsets
+
+```python
+from django_auto_admin_fieldsets.admin import remove_fields_from_fieldsets
+
+fieldsets = [
+    ("Basic Information", {"fields": ["title", "slug", "hide_title"]}),
+    ("Content", {"fields": ["description", "noindex"]}),
+]
+
+fieldsets = remove_fields_from_fieldsets(fieldsets, "hide_title")
+fieldsets = remove_fields_from_fieldsets(fieldsets, ["noindex"])
+```
+
 ## Configuration Options
 
 - `remaining_fields_placeholder`: The placeholder string to look for in your fieldsets (default: `"__remaining__"`)

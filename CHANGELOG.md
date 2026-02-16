@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added `remove_fields_from_fieldsets` utility function for removing one or multiple field names from Django admin fieldsets
+
 ## [0.2] - 2024-04-14
 
 ### Changed

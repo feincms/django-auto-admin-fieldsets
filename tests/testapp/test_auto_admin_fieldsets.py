@@ -1,3 +1,5 @@
+import copy
+
 from django.contrib import admin
 from django.db import models
 from django.test import TestCase
@@ -5,6 +7,7 @@ from django.test import TestCase
 from django_auto_admin_fieldsets.admin import (
     AutoFieldsetsMixin,
     auto_add_fields_to_fieldsets,
+    remove_fields_from_fieldsets,
 )
 
 
@@ -139,3 +142,83 @@ class TestStandaloneFunction(TestCase):
         ]  # No featured, published, created_at, updated_at
 
         self.assertEqual(set(remaining_fields), set(expected_remaining))
+
+
+class TestRemoveFieldsFromFieldsets(TestCase):
+    def test_remove_single_field(self):
+        fieldsets = [
+            ("Basic", {"fields": ["title", "slug", "hide_title"]}),
+            ("Extra", {"fields": ["hide_title", "description"]}),
+        ]
+
+        result = remove_fields_from_fieldsets(fieldsets, "hide_title")
+
+        self.assertEqual(
+            result,
+            [
+                ("Basic", {"fields": ("title", "slug")}),
+                ("Extra", {"fields": ("description",)}),
+            ],
+        )
+
+    def test_remove_multiple_fields(self):
+        fieldsets = [
+            ("Basic", {"fields": ["title", "slug", "hide_title", "noindex"]}),
+            ("Extra", {"fields": ["description", "noindex"]}),
+        ]
+
+        result = remove_fields_from_fieldsets(fieldsets, ["hide_title", "noindex"])
+
+        self.assertEqual(
+            result,
+            [
+                ("Basic", {"fields": ("title", "slug")}),
+                ("Extra", {"fields": ("description",)}),
+            ],
+        )
+
+    def test_remove_from_group_fields(self):
+        fieldsets = [
+            (
+                "SEO",
+                {
+                    "fields": [
+                        "slug",
+                        ["hide_title", "noindex"],
+                        ("author", "hide_title"),
+                        ["hide_title"],
+                        ("hide_title",),
+                    ]
+                },
+            ),
+        ]
+
+        result = remove_fields_from_fieldsets(fieldsets, "hide_title")
+
+        self.assertEqual(
+            result,
+            [
+                (
+                    "SEO",
+                    {
+                        "fields": (
+                            "slug",
+                            "noindex",
+                            "author",
+                        )
+                    },
+                ),
+            ],
+        )
+
+    def test_remove_does_not_mutate_input(self):
+        fieldsets = [
+            ("Basic", {"fields": ["title", ["hide_title", "slug"]]}),
+            ("Extra", {"fields": ["hide_title"]}),
+        ]
+        original = copy.deepcopy(fieldsets)
+
+        result = remove_fields_from_fieldsets(fieldsets, "hide_title")
+
+        self.assertEqual(fieldsets, original)
+        self.assertIsNot(result, fieldsets)
