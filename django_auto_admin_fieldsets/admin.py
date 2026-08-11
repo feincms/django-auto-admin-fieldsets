@@ -94,7 +94,7 @@ def remove_fields_from_fieldsets(
 def auto_add_fields_to_fieldsets(
     model: Any,
     fieldsets: list[tuple[str, dict[str, Any]]],
-    exclude: list[str] = None,
+    exclude: list[str] | None = None,
     get_fields=None,
     placeholder: str = "__remaining__",
 ) -> list[tuple[str, dict[str, Any]]]:
