@@ -25,6 +25,7 @@ from django.contrib import admin
 from django_auto_admin_fieldsets.admin import AutoFieldsetsMixin
 from . import models
 
+
 @admin.register(models.MyModel)
 class MyModelAdmin(AutoFieldsetsMixin, admin.ModelAdmin):
     # Define fieldsets as usual with a placeholder
@@ -44,6 +45,7 @@ from django.contrib import admin
 from django_auto_admin_fieldsets.admin import AutoFieldsetsModelAdmin
 from . import models
 
+
 @admin.register(models.MyModel)
 class MyModelAdmin(AutoFieldsetsModelAdmin):
     # Define fieldsets as usual with a placeholder
@@ -60,6 +62,7 @@ from django.contrib import admin
 from django_auto_admin_fieldsets.admin import auto_add_fields_to_fieldsets
 from . import models
 
+
 @admin.register(models.MyModel)
 class MyModelAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -75,6 +78,7 @@ class MyModelAdmin(admin.ModelAdmin):
             exclude=self.exclude or [],
             placeholder="__remaining__",
         )
+
 
 admin.site.register(MyModel, MyModelAdmin)
 ```
